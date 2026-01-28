@@ -6,9 +6,9 @@ set -q fzf_scope_file; or set -U fzf_scope_file ~/.local/share/fish/fzf_scope.lo
 set -q fzf_scope_max_entries; or set -U fzf_scope_max_entries 50000
 set -q fzf_scope_exclude_patterns; or set -U fzf_scope_exclude_patterns
 
-# Register preexec hook to log commands
-function _fzf_scope_preexec --on-event fish_preexec
-    _fzf_scope_log $argv[1]
+# Register postexec hook to log commands with exit status
+function _fzf_scope_postexec --on-event fish_postexec
+    _fzf_scope_log $status $argv[1]
 end
 
 # Keybinding: Ctrl+Alt+R for project-scoped history search

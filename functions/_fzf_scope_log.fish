@@ -1,6 +1,4 @@
-function _fzf_scope_log --description "Log command with directory context"
-    set -l cmd $argv[1]
-
+function _fzf_scope_log --description "Log command with directory context and exit status" --argument-names exit_status cmd
     # Skip empty commands
     test -z "$cmd"; and return
 
@@ -26,6 +24,6 @@ function _fzf_scope_log --description "Log command with directory context"
         mkdir -p $log_dir
     end
 
-    # Append to log file: timestamp<tab>project_root<tab>command
-    echo -e "$timestamp\t$project_root\t$cmd" >> $fzf_scope_file
+    # Append to log file: timestamp<tab>project_root<tab>working_dir<tab>session_id<tab>exit_status<tab>command
+    echo -e "$timestamp\t$project_root\t$PWD\t$fish_pid\t$exit_status\t$cmd" >> $fzf_scope_file
 end
