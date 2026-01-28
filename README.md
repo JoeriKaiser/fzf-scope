@@ -9,6 +9,9 @@ Designed to complement [fzf.fish](https://github.com/PatrickF1/fzf.fish).
 - Automatically logs commands with their git project context (or working directory)
 - Search history scoped to your current project with `Ctrl+Alt+R`
 - Keeps global `Ctrl+R` history search untouched
+- Rich UI with timestamps, subdirectory context, and exit status indicators
+- Preview panel showing adjacent commands from the same session
+- Multi-select support to combine multiple commands
 - Cleanup utilities to manage log size
 
 ## Installation
@@ -38,6 +41,17 @@ source ~/.config/fish/fzf-scope/conf.d/fzf_scope.fish
 ### Project-scoped history search
 
 Press `Ctrl+Alt+R` to search command history filtered to your current git project. If you're not in a git repository, it filters by the exact current directory.
+
+**Keybindings in the search interface:**
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Toggle selection on current item |
+| `Ctrl+A` | Select all visible items |
+| `Ctrl+D` | Deselect all |
+| `?` | Toggle preview panel |
+| `Enter` | Confirm selection |
+| `Esc` | Cancel |
 
 ### Cleanup utility
 
@@ -72,16 +86,22 @@ set -U fzf_scope_exclude_patterns 'password' 'secret' 'token' 'API_KEY'
 
 ## How it works
 
-1. A `fish_preexec` hook logs every command with:
+1. A `fish_postexec` hook logs every command with:
    - Unix timestamp
    - Git repository root (or `$PWD` if not in a repo)
+   - Working directory (for subdirectory context)
+   - Session ID (for grouping commands)
+   - Exit status (success/failure)
    - The command itself
 
 2. When you press `Ctrl+Alt+R`, the plugin:
    - Filters the log to entries matching your current project
+   - Displays formatted entries with timestamps and subdirectory paths
+   - Shows failed commands with a red `✗` indicator
    - Deduplicates commands (most recent first)
-   - Pipes to fzf for selection
-   - Places the selected command on your command line
+   - Provides a preview panel with session context (`?` to toggle)
+   - Supports multi-select (`Tab` to select, `Ctrl+A` for all)
+   - Places the selected command(s) on your command line
 
 ## License
 
